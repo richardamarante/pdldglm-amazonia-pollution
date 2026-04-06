@@ -1,0 +1,221 @@
+@media (min-width: 1081px) and (max-height: 820px), (min-width: 1081px) and (max-width: 1450px) {
+  .ic2025-spatial-app {
+    --sp-left-w: 282px;
+    --sp-right-w: 274px;
+  }
+
+  .ic2025-spatial-toolbar {
+    top: 6px;
+    left: 12px;
+    gap: 8px;
+  }
+
+  .ic2025-spatial-toolbar-left {
+    gap: 6px;
+  }
+
+  .ic2025-spatial-theme-drop,
+  .ic2025-spatial-theme-fallback {
+    min-width: 248px;
+  }
+
+  .ic2025-spatial-theme-fallback .form-control {
+    height: 40px;
+    font-size: 16px;
+    border-radius: 14px;
+  }
+
+  .ic2025-spatial-icon-btn.btn.btn-default {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .ic2025-spatial-sidebar {
+    top: 52px;
+    left: 12px;
+    max-height: calc(100vh - 64px);
+  }
+
+  .ic2025-spatial-rightpanel {
+    top: 12px;
+    right: 12px;
+    max-height: calc(100vh - 24px);
+  }
+
+  .ic2025-spatial-sidebar-inner {
+    max-height: calc(100vh - 64px);
+  }
+
+  .ic2025-spatial-sidebar-scroll,
+  .ic2025-spatial-rightpanel-scroll {
+    padding: 12px;
+  }
+
+  .ic2025-spatial-sidebar-title {
+    font-size: 29px;
+  }
+
+  .ic2025-spatial-sidebar-title-row {
+    margin-bottom: 12px;
+  }
+
+  .ic2025-spatial-section {
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .ic2025-spatial-section-head {
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .ic2025-spatial-section label,
+  .ic2025-spatial-section .control-label {
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .ic2025-spatial-section .form-group {
+    margin-bottom: 10px;
+  }
+
+  .ic2025-spatial-section input.form-control,
+  .ic2025-spatial-section select.form-control,
+  .ic2025-spatial-section textarea.form-control,
+  .ic2025-spatial-section .selectize-control.single .selectize-input {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+
+  .ic2025-spatial-section .selectize-control.single .selectize-input {
+    min-height: 40px;
+  }
+
+  .ic2025-spatial-time-card,
+  .ic2025-spatial-scale-card {
+    gap: 8px;
+  }
+
+  .ic2025-spatial-time-range-status,
+  .ic2025-spatial-mini-label {
+    font-size: 10px;
+  }
+
+  .ic2025-spatial-time-range .irs--shiny {
+    height: 46px;
+  }
+
+  .ic2025-spatial-time-axis {
+    font-size: 10px;
+  }
+
+  .ic2025-spatial-note {
+    margin-top: 6px;
+    padding: 9px 11px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .ic2025-spatial-legend-wrap {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .ic2025-spatial-timeline-shell {
+    top: 12px;
+    left: calc(var(--sp-left-w) + 30px);
+    right: calc(var(--sp-right-w) + 30px);
+  }
+
+  .ic2025-spatial-timeline-card {
+    min-width: 390px;
+    max-width: min(680px, 100%);
+    padding: 7px 12px 6px;
+  }
+
+  .ic2025-spatial-timeline-head {
+    gap: 10px;
+  }
+
+  .ic2025-spatial-timeline-toggle label {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .ic2025-spatial-timeline-value {
+    font-size: 15px;
+  }
+
+  .ic2025-spatial-timeline-card .irs--shiny {
+    height: 38px;
+  }
+
+  .ic2025-spatial-timeline-axis,
+  .ic2025-spatial-timeline-edge-label {
+    font-size: 10px;
+  }
+
+  .ic2025-spatial-timeline-footer {
+    margin-top: 6px;
+    padding: 0 6px;
+  }
+
+  .ic2025-spatial-player-btn.btn.btn-default {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+  }
+
+  .ic2025-spatial-player-btn-main.btn.btn-default {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .ic2025-spatial-table-pane,
+  .ic2025-spatial-portrait {
+    top: 78px;
+    left: 320px;
+    right: 304px;
+    bottom: 76px;
+  }
+
+  .ic2025-spatial-table-pane {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .ic2025-spatial-portrait {
+    padding: 14px 16px 10px;
+  }
+
+  .ic2025-spatial-rightpanel-title {
+    font-size: 25px;
+    margin-bottom: 8px;
+  }
+
+  .ic2025-spatial-rightpanel-title-small {
+    font-size: 20px;
+    margin-top: 6px;
+  }
+
+  .ic2025-spatial-rightpanel-body {
+    font-size: 15px;
+    line-height: 1.38;
+  }
+
+  .ic2025-spatial-rightpanel-body p {
+    margin-bottom: 10px;
+  }
+
+  .ic2025-spatial-view-btn.btn.btn-default {
+    height: 44px;
+    padding: 0 1.6rem;
+  }
+
+  .ic2025-spatial-main .mapboxgl-ctrl-bottom-right {
+    bottom: 68px;
+    right: 12px;
+  }
+}

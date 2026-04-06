@@ -1,0 +1,14 @@
+get_landing_click	get_landing_click
+get_landing_discover	get_landing_discover
+get_landing_event	get_landing_event
+get_landing_news	get_landing_news
+get_lang_click	get_lang_click
+get_theme_drop_click	get_theme_drop_click
+get_theme_drop_event	get_theme_drop_event
+landing_input	landing_input
+theme_drop_input	theme_drop_input
+title_box_input	title_box_input
+update_landing	update_landing
+update_theme_drop	update_theme_drop
+update_theme_drop_lang	update_theme_drop_lang
+update_title_box	update_title_box

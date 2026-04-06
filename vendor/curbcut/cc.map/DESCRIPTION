@@ -1,0 +1,18 @@
+Package: cc.map
+Title: Curbcut Map
+Version: 0.0.0.9000
+Authors@R: 
+    c(person("Curbcut", email = "contact@curbcut.ca", role = "aut"),
+    person("Maxime", "Bélanger De Blois", email = "maxime.belangerdeblois@mcgill.ca", role = "cre"),
+    person("David", "Wachsmuth", email = "david.wachsmuth@mcgill.ca", role  = "ctb"))
+Description: Map package using a React app for Shiny (one paragraph).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports: 
+    htmltools,
+    reactR,
+    shiny,
+    jsonlite,
+    stringi

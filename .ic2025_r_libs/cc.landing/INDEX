@@ -1,0 +1,22 @@
+get_landing_click       Retrieve Page Link Click Information from
+                        Landing input
+get_landing_discover    Retrieve Discover Link Click Information from
+                        Landing input
+get_landing_event       Retrieve Event Information from the Landing
+                        input
+get_landing_news        Retrieve News Link Click Information from
+                        Landing input
+get_lang_click          Retrieve lang click from Landing input
+get_theme_drop_click    Retrieve Page Link Click Information from Theme
+                        dropdown input
+get_theme_drop_event    Retrieve Event Information from the Theme
+                        dropdown input
+landing_input           Generate a Landing Input for a Curbcut app
+theme_drop_input        Generate a theme dropdown input for a Curbcut
+                        app
+title_box_input         Create a Themed Title Box Shiny Input
+update_landing          Update the landing page input
+update_theme_drop       Update the theme dropdown input
+update_theme_drop_lang
+                        Update the theme pages
+update_title_box        Update the title box input

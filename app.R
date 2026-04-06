@@ -878,6 +878,7 @@ DATA_SOURCE_AGGREGATED_DUCKDB_TABLE <- "base_final_era5land_cams_internacoes_obi
 # "rds"    -> leitura tradicional do .rds
 # "duckdb" -> consultas sob demanda no arquivo .duckdb (mais rápido para base grande)
 DATA_STORAGE_BACKEND <- "duckdb"
+ENABLE_SPATIAL_COMPACT_DESKTOP <- FALSE
 
 # Estratégia de carga da base:
 # "startup_once_no_cache": lê o(s) arquivo(s) uma vez no startup, ignora cache interno do funcoes.R
@@ -1681,6 +1682,9 @@ ui <- dashboardPage(
       tags$link(rel = "stylesheet", type = "text/css", href = asset_href("profile.css")),
       tags$link(id = "custom-css-link", rel = "stylesheet", type = "text/css", href = asset_href("custom.css")),
       tags$link(rel = "stylesheet", type = "text/css", href = asset_href("spatial/spatial-shell.css")),
+      if (isTRUE(ENABLE_SPATIAL_COMPACT_DESKTOP)) {
+        tags$link(rel = "stylesheet", type = "text/css", href = asset_href("spatial/spatial-shell-compact.css"))
+      },
       tags$script(src = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"),
       tags$script(src = asset_href("spatial/spatial-shell.js")),
       if (MENU_STYLE == "flat") {
