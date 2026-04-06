@@ -50,7 +50,7 @@ ic2025_storage_backend <- function() {
 }
 
 ic2025_base_agregada_duckdb_path <- function() {
-  as.character(getOption("ic2025.agregada_duckdb", "base_final_top_2000_maiores_pop.duckdb"))
+  as.character(getOption("ic2025.agregada_duckdb", "base_final.duckdb"))
 }
 
 ic2025_base_agregada_duckdb_table <- function() {

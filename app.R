@@ -869,7 +869,7 @@ if (isTRUE(STARTUP_DIAGNOSTICS)) {
 # ----------------------------
 DATA_SOURCE_MODE <- "agregada"
 DATA_SOURCE_AGGREGATED_RDS <- "base_final_era5land_cams_internacoes_obitos_BR_20150101_20251231_FINAL_missing_padronizado.rds"
-DATA_SOURCE_AGGREGATED_DUCKDB <- "base_final_top_2000_maiores_pop.duckdb" # base_final_so_capitais.duckdb
+DATA_SOURCE_AGGREGATED_DUCKDB <- "base_final.duckdb" # base_final_so_capitais.duckdb
 DATA_SOURCE_AGGREGATED_DUCKDB_TABLE <- "base_final_era5land_cams_internacoes_obitos_missing_padronizado"
 
 # Backend da base agregada:

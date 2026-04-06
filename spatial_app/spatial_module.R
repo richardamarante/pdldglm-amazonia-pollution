@@ -46,7 +46,7 @@ spatial_detect_project_root <- function() {
   for (cand in cands) {
     if (!nzchar(cand)) next
     root <- normalizePath(cand, winslash = "/", mustWork = FALSE)
-    if (file.exists(file.path(root, "base_final_top_2000_maiores_pop.duckdb")) &&
+    if (file.exists(file.path(root, "base_final.duckdb")) &&
         dir.exists(file.path(root, "cache_geo"))) {
       return(root)
     }
@@ -1830,7 +1830,7 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
     project_root <- spatial_detect_project_root()
     spatial_activate_vendor_library(project_root = project_root)
     cc_landing_ready <- isTRUE(spatial_ensure_curbcut_packages(project_root = project_root))
-    db_path <- file.path(project_root, "base_final_top_2000_maiores_pop.duckdb")
+    db_path <- file.path(project_root, "base_final.duckdb")
     spatial_register_geo_resources(project_root = project_root)
     spatial_register_vendor_font_resources(project_root = project_root)
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
