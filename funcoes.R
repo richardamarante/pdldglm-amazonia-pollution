@@ -28,9 +28,6 @@ ic2025_data_mode <- function() {
 }
 
 
-
-
-
 ic2025_base_agregada_path <- function() {
   as.character(getOption("ic2025.agregada_rds", "base_final_era5land_cams_internacoes_obitos_BR_20150101_20251231_FINAL_missing_padronizado.rds"))
 }

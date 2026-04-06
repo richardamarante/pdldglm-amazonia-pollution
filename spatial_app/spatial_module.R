@@ -36,9 +36,6 @@ SPATIAL_BACKGROUND_REFRESH_MS <- 900L
 })
 
 
-
-
-
 spatial_detect_project_root <- function() {
   cands <- unique(c(
     as.character(getOption("ic2025.project_root", "")),
@@ -57,9 +54,6 @@ spatial_detect_project_root <- function() {
   }
   normalizePath(getwd(), winslash = "/", mustWork = FALSE)
 }
-
-
-
 
 
 spatial_default_mapbox_token <- function() {
@@ -1273,9 +1267,6 @@ spatial_package_imports <- function(pkg_dir) {
 }
 
 
-
-
-
 spatial_ensure_vendor_package <- function(package, pkg_dir, project_root = spatial_detect_project_root()) {
   spatial_activate_vendor_library(project_root = project_root)
   if (requireNamespace(package, quietly = TRUE)) {
@@ -1313,9 +1304,6 @@ spatial_ensure_vendor_package <- function(package, pkg_dir, project_root = spati
 
   requireNamespace(package, quietly = TRUE)
 }
-
-
-
 
 
 spatial_ensure_runtime_package <- function(package, project_root = spatial_detect_project_root()) {
@@ -1465,7 +1453,6 @@ spatial_tutorial_steps <- function(ns) {
       build_element("left_widgets"),
       build_element("legend_div"),
       build_element("zoom_div"),
-      build_element("compare_panel"),
       build_element("timeline_card"),
       build_element("explore_full"),
       build_element("floating_panel_content"),
@@ -1478,21 +1465,19 @@ spatial_tutorial_steps <- function(ns) {
       "Escolha indicador, comparação, tempo e geografia. O mapa se atualiza conforme os filtros mudam.",
       "A legenda mostra como os valores foram traduzidos em cores no recorte atual.",
       "Com a escala automática ligada, a visualização alterna entre UF e município conforme o zoom. Desligando essa opção, clicar em uma UF abre os municípios daquele recorte até você afastar o mapa de novo.",
-      "Se quiser comparar a variável principal com uma segunda variável, selecione-a aqui e a série temporal será atualizada.",
       "Ative a análise de um dia específico para percorrer as datas disponíveis no período filtrado.",
       "O painel da direita resume o recorte atual ou a localidade selecionada e compara o valor com a distribuição observada.",
       "Use estes botões para alternar entre mapa, tabela e série temporal. As três visões refletem os mesmos filtros.",
       "Você pode rever este tour a qualquer momento clicando novamente neste botão.",
       "A engrenagem abre as opções avançadas, como região padrão e localização padrão da Visualização Espacial."
     ),
-    position = c("auto", "right", "right", "auto", "left", "left", "bottom", "left", "top", "left", "left"),
+    position = c("auto", "right", "right", "auto", "left", "bottom", "left", "top", "left", "left"),
     title = c(
       "Mapa",
       "Tema",
       "Seleção de variáveis",
       "Legenda",
       "Escala",
-      "Comparação",
       "Linha do tempo",
       "Explore",
       "Troca de visualização",
@@ -1845,9 +1830,6 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
     project_root <- spatial_detect_project_root()
     spatial_activate_vendor_library(project_root = project_root)
     
-
-
-
 cc_landing_ready <- isTRUE(spatial_ensure_curbcut_packages(project_root = project_root))
     db_path <- if (exists("ic2025_base_agregada_duckdb_path", mode = "function")) {
       ic2025_base_agregada_duckdb_path()
@@ -1855,9 +1837,6 @@ cc_landing_ready <- isTRUE(spatial_ensure_curbcut_packages(project_root = projec
       file.path(project_root, "base_final.duckdb")
     }
     spatial_register_geo_resources(project_root = project_root)
-spatial_register_geo_resources(project_root = project_root)
-spatial_register_geo_resources(project_root = project_root)
-spatial_register_geo_resources(project_root = project_root)
 spatial_register_geo_resources(project_root = project_root)
     spatial_register_vendor_font_resources(project_root = project_root)
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
@@ -2445,10 +2424,7 @@ spatial_register_geo_resources(project_root = project_root)
       shiny::updateSliderInput(session, "snapshot_index", value = next_idx)
     })
 
-
-
-
-
+    
 output$theme_drop_ui <- shiny::renderUI({
       fallback_ui <- shiny::div(
         class = "ic2025-spatial-theme-fallback",
@@ -2485,9 +2461,6 @@ output$theme_drop_ui <- shiny::renderUI({
         }
       )
     })
-
-
-
 
 
     theme_drop_click <- shiny::reactive({

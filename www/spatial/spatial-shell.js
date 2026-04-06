@@ -617,6 +617,54 @@
     return theme && Object.prototype.hasOwnProperty.call(theme, key) ? theme[key] : null;
   }
 
+  function boundaryPaintForScale(scaleName) {
+    if (scaleName === "state") {
+      return {
+        "line-color": themeColor("spatial.border_strong") || "rgba(72, 77, 91, 0.95)",
+        "line-opacity": 0.96,
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          3.2, 0.9,
+          4.8, 1.15,
+          6.5, 1.45
+        ]
+      };
+    }
+    return {
+      "line-color": themeColor("spatial.border_strong") || "rgba(72, 77, 91, 0.95)",
+      "line-opacity": 0.94,
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        5.2, 1.72,
+        6.4, 2.30,
+        8.0, 2.84,
+        10.5, 3.48
+      ]
+    };
+  }
+
+  function fillOutlineColorForScale(scaleName) {
+    if (scaleName === "municipio") {
+      return themeColor("spatial.border_strong") || "rgba(72, 77, 91, 0.95)";
+    }
+    return "rgba(0, 0, 0, 0)";
+  }
+
+  function boundaryLayoutForScale(scaleName, visible) {
+    var layout = {
+      visibility: visible ? "visible" : "none"
+    };
+    if (scaleName === "municipio") {
+      layout["line-join"] = "round";
+      layout["line-cap"] = "round";
+    }
+    return layout;
+  }
+
   function findFillAnchorLayerId(map) {
     if (!map || typeof map.getStyle !== "function") {
       return null;
@@ -913,7 +961,10 @@
       "fillOpacity",
       0.45
     );
-    var shouldDrawBoundary = scaleName === "municipio";
+    var fillOutlineColor = fillOutlineColorForScale(scaleName);
+    var shouldDrawBoundary = scaleName === "municipio" || scaleName === "state";
+    var boundaryPaint = boundaryPaintForScale(scaleName);
+    var boundaryLayout = boundaryLayoutForScale(scaleName, visibleScale === scaleName);
 
     if (!state.map.getSource(scaleState.sourceId)) {
       data = scaleState.lastSourceSignature === sourceSignature && scaleState.lastSourceData
@@ -944,6 +995,11 @@
     }
 
     if (!state.map.getLayer(scaleState.fillId)) {
+      var fillPaint = {
+        "fill-color": fillColor,
+        "fill-opacity": fillOpacity,
+        "fill-outline-color": fillOutlineColor
+      };
       state.map.addLayer(
         {
           id: scaleState.fillId,
@@ -953,10 +1009,7 @@
           layout: {
             visibility: visibleScale === scaleName ? "visible" : "none"
           },
-          paint: {
-            "fill-color": fillColor,
-            "fill-opacity": fillOpacity
-          }
+          paint: fillPaint
         },
         fillAnchorId || undefined
       );
@@ -964,6 +1017,7 @@
       state.map.setFilter(scaleState.fillId, fillFilter);
       state.map.setPaintProperty(scaleState.fillId, "fill-color", fillColor);
       state.map.setPaintProperty(scaleState.fillId, "fill-opacity", fillOpacity);
+      state.map.setPaintProperty(scaleState.fillId, "fill-outline-color", fillOutlineColor);
       setLayerVisibility(state.map, scaleState.fillId, visibleScale === scaleName);
     }
 
@@ -975,44 +1029,20 @@
             type: "line",
             source: scaleState.sourceId,
             filter: fillFilter,
-            layout: {
-              visibility: visibleScale === scaleName ? "visible" : "none"
-            },
-            paint: {
-              "line-color": themeColor("spatial.border_medium") || "rgba(17, 17, 17, 0.28)",
-              "line-opacity": 0.72,
-              "line-width": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                6.8, 0.45,
-                8.2, 0.7,
-                10.5, 1.0
-              ]
-            }
+            layout: boundaryLayout,
+            paint: boundaryPaint
           },
           fillAnchorId || undefined
         );
       } else {
         state.map.setFilter(scaleState.lineId, fillFilter);
-        state.map.setPaintProperty(
-          scaleState.lineId,
-          "line-color",
-          themeColor("spatial.border_medium") || "rgba(17, 17, 17, 0.28)"
-        );
-        state.map.setPaintProperty(scaleState.lineId, "line-opacity", 0.72);
-        state.map.setPaintProperty(
-          scaleState.lineId,
-          "line-width",
-          [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            6.8, 0.45,
-            8.2, 0.7,
-            10.5, 1.0
-          ]
-        );
+        state.map.setPaintProperty(scaleState.lineId, "line-color", boundaryPaint["line-color"]);
+        state.map.setPaintProperty(scaleState.lineId, "line-opacity", boundaryPaint["line-opacity"]);
+        state.map.setPaintProperty(scaleState.lineId, "line-width", boundaryPaint["line-width"]);
+        if (scaleName === "municipio") {
+          state.map.setLayoutProperty(scaleState.lineId, "line-join", "round");
+          state.map.setLayoutProperty(scaleState.lineId, "line-cap", "round");
+        }
         setLayerVisibility(state.map, scaleState.lineId, visibleScale === scaleName);
       }
     }
