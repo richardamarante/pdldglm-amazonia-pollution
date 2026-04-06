@@ -896,7 +896,7 @@ ENABLE_DESC_MAPS <- TRUE
 # TRUE  -> mantém os mapas da Descritiva aquecendo em background mesmo
 #         quando a visão ativa é "Série Temporal"
 # FALSE -> suspende os mapas ocultos
-DESC_MAP_WARM_BACKGROUND <- isTRUE(getOption("ic2025.desc_map_warm_background", TRUE))
+DESC_MAP_WARM_BACKGROUND <- isTRUE(getOption("ic2025.desc_map_warm_background", FALSE))
 # Labels do mapa descritivo:
 # FALSE -> não mostra "DF"
 # TRUE  -> mostra "DF" junto com as demais siglas
@@ -5346,7 +5346,7 @@ server <- function(input, output, session) {
   outputOptions(output, "sim_series", suspendWhenHidden = TRUE)
   outputOptions(output, "sim_beta_true", suspendWhenHidden = TRUE)
   outputOptions(output, "sim_fit_beta", suspendWhenHidden = TRUE)
-  outputOptions(output, "desc_plot", suspendWhenHidden = FALSE)
+  outputOptions(output, "desc_plot", suspendWhenHidden = TRUE)
   outputOptions(output, "desc_map_brasil", suspendWhenHidden = !isTRUE(DESC_MAP_WARM_BACKGROUND))
   outputOptions(output, "desc_map_regiao", suspendWhenHidden = !isTRUE(DESC_MAP_WARM_BACKGROUND))
   outputOptions(output, "desc_map_estado", suspendWhenHidden = !isTRUE(DESC_MAP_WARM_BACKGROUND))
