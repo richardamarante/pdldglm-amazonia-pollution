@@ -31,17 +31,143 @@ ic2025_base_agregada_path <- function() {
   as.character(getOption("ic2025.agregada_rds", "base_final_era5land_cams_internacoes_obitos_BR_20150101_20251231_FINAL_missing_padronizado.rds"))
 }
 
+ic2025_project_root <- function() {
+  cands <- unique(c(
+    as.character(getOption("ic2025.project_root", "")),
+    getwd(),
+    ".",
+    "..",
+    "../.."
+  ))
+  for (cand in cands) {
+    if (!nzchar(cand)) next
+    root <- normalizePath(cand, winslash = "/", mustWork = FALSE)
+    has_core_files <- file.exists(file.path(root, "app.R")) || file.exists(file.path(root, "funcoes.R"))
+    if (has_core_files && dir.exists(file.path(root, "cache_geo"))) {
+      return(root)
+    }
+  }
+  normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+}
+
+ic2025_is_absolute_path <- function(path) {
+  grepl("^(/|~|[A-Za-z]:[/\\\\]|\\\\\\\\)", as.character(path %||% ""))
+}
+
+ic2025_resolve_project_path <- function(path, project_root = ic2025_project_root()) {
+  path <- as.character(path %||% "")
+  if (!nzchar(path)) return(path)
+  if (ic2025_is_absolute_path(path)) {
+    return(normalizePath(path, winslash = "/", mustWork = FALSE))
+  }
+  normalizePath(file.path(project_root, path), winslash = "/", mustWork = FALSE)
+}
+
+ic2025_is_git_lfs_pointer <- function(path) {
+  if (!file.exists(path)) return(FALSE)
+  info <- suppressWarnings(file.info(path))
+  size <- info$size[[1]]
+  if (!is.finite(size) || is.na(size) || size > 4096) return(FALSE)
+  lines <- tryCatch(
+    readLines(path, n = 3L, warn = FALSE, encoding = "UTF-8"),
+    error = function(e) character()
+  )
+  if (length(lines) < 3L) return(FALSE)
+  any(grepl("^version https://git-lfs.github.com/spec/v1$", lines)) &&
+    any(grepl("^oid sha256:", lines)) &&
+    any(grepl("^size [0-9]+$", lines))
+}
+
+ic2025_agregada_duckdb_url <- function() {
+  url <- as.character(getOption("ic2025.agregada_duckdb_url", ""))
+  if (!nzchar(url)) {
+    url <- Sys.getenv("IC2025_AGREGADA_DUCKDB_URL", unset = "")
+  }
+  if (!nzchar(url)) {
+    url <- "https://github.com/richardamarante/pdldglm-amazonia-pollution/releases/latest/download/base_final.duckdb"
+  }
+  url
+}
+
+ic2025_agregada_duckdb_timeout <- function() {
+  out <- suppressWarnings(as.integer(getOption("ic2025.agregada_duckdb_timeout", NA_integer_)))
+  if (!is.finite(out) || is.na(out)) {
+    out <- suppressWarnings(as.integer(Sys.getenv("IC2025_AGREGADA_DUCKDB_TIMEOUT", unset = "3600")))
+  }
+  if (!is.finite(out) || is.na(out) || out < 60L) out <- 3600L
+  out
+}
+
+ic2025_agregada_duckdb_cache_dir <- function() {
+  dir_out <- as.character(getOption("ic2025.agregada_duckdb_cache_dir", ""))
+  if (!nzchar(dir_out)) {
+    dir_out <- Sys.getenv("IC2025_AGREGADA_DUCKDB_CACHE_DIR", unset = "")
+  }
+  if (!nzchar(dir_out)) {
+    dir_out <- file.path(tools::R_user_dir("ic2025", which = "cache"), "duckdb")
+  }
+  dir.create(dir_out, recursive = TRUE, showWarnings = FALSE)
+  normalizePath(dir_out, winslash = "/", mustWork = FALSE)
+}
+
+ic2025_duckdb_file_ready <- function(path) {
+  if (!file.exists(path) || ic2025_is_git_lfs_pointer(path)) return(FALSE)
+  info <- suppressWarnings(file.info(path))
+  size <- info$size[[1]]
+  is.finite(size) && !is.na(size) && size > 0
+}
+
+ic2025_download_agregada_duckdb <- function(dest_path, url = ic2025_agregada_duckdb_url()) {
+  if (!nzchar(url)) {
+    stop("URL do DuckDB não configurada. Defina 'ic2025.agregada_duckdb_url' ou 'IC2025_AGREGADA_DUCKDB_URL'.")
+  }
+
+  dir.create(dirname(dest_path), recursive = TRUE, showWarnings = FALSE)
+  tmp_path <- paste0(dest_path, ".part")
+  if (file.exists(tmp_path)) unlink(tmp_path, force = TRUE)
+
+  old_timeout <- getOption("timeout")
+  options(timeout = max(as.integer(old_timeout %||% 60L), ic2025_agregada_duckdb_timeout()))
+  on.exit(options(timeout = old_timeout), add = TRUE)
+  on.exit(if (file.exists(tmp_path)) unlink(tmp_path, force = TRUE), add = TRUE)
+
+  message("Baixando base DuckDB do GitHub Releases...")
+  utils::download.file(
+    url = url,
+    destfile = tmp_path,
+    mode = "wb",
+    quiet = FALSE
+  )
+
+  if (!ic2025_duckdb_file_ready(tmp_path)) {
+    stop("Download do DuckDB falhou ou retornou um arquivo inválido: ", tmp_path)
+  }
+
+  if (file.exists(dest_path)) unlink(dest_path, force = TRUE)
+  if (!file.rename(tmp_path, dest_path)) {
+    stop("Não foi possível mover o DuckDB baixado para: ", dest_path)
+  }
+
+  normalizePath(dest_path, winslash = "/", mustWork = FALSE)
+}
+
 ic2025_storage_backend <- function() {
   backend <- tolower(as.character(getOption("ic2025.storage_backend", "rds")))
   if (!backend %in% c("rds", "duckdb")) backend <- "rds"
   if (identical(backend, "duckdb")) {
     ok_duck <- requireNamespace("duckdb", quietly = TRUE)
     ok_dbi <- requireNamespace("DBI", quietly = TRUE)
-    db_path <- ic2025_base_agregada_duckdb_path()
+    db_path <- tryCatch(
+      ic2025_base_agregada_duckdb_path(),
+      error = function(e) {
+        warning("Backend 'duckdb' solicitado, mas não foi possível preparar a base: ", conditionMessage(e))
+        ""
+      }
+    )
     if (!ok_duck || !ok_dbi) {
       warning("Backend 'duckdb' solicitado, mas pacotes 'duckdb'/'DBI' não estão disponíveis. Voltando para 'rds'.")
       backend <- "rds"
-    } else if (!file.exists(db_path)) {
+    } else if (!nzchar(db_path) || !file.exists(db_path)) {
       warning("Backend 'duckdb' solicitado, mas arquivo não encontrado: ", db_path, ". Voltando para 'rds'.")
       backend <- "rds"
     }
@@ -49,8 +175,23 @@ ic2025_storage_backend <- function() {
   backend
 }
 
-ic2025_base_agregada_duckdb_path <- function() {
-  as.character(getOption("ic2025.agregada_duckdb", "base_final.duckdb"))
+ic2025_base_agregada_duckdb_path <- function(download_if_needed = TRUE) {
+  configured <- as.character(getOption("ic2025.agregada_duckdb", "base_final.duckdb"))
+  local_path <- ic2025_resolve_project_path(configured)
+
+  if (ic2025_duckdb_file_ready(local_path)) {
+    return(local_path)
+  }
+  if (!isTRUE(download_if_needed)) {
+    return(local_path)
+  }
+
+  cached_path <- file.path(ic2025_agregada_duckdb_cache_dir(), basename(configured))
+  if (ic2025_duckdb_file_ready(cached_path)) {
+    return(cached_path)
+  }
+
+  ic2025_download_agregada_duckdb(cached_path)
 }
 
 ic2025_base_agregada_duckdb_table <- function() {

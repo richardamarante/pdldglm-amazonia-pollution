@@ -46,7 +46,7 @@ spatial_detect_project_root <- function() {
   for (cand in cands) {
     if (!nzchar(cand)) next
     root <- normalizePath(cand, winslash = "/", mustWork = FALSE)
-    if (file.exists(file.path(root, "base_final.duckdb")) &&
+    if ((file.exists(file.path(root, "app.R")) || file.exists(file.path(root, "funcoes.R"))) &&
         dir.exists(file.path(root, "cache_geo"))) {
       return(root)
     }
@@ -1270,7 +1270,6 @@ spatial_ensure_vendor_package <- function(package, pkg_dir, project_root = spati
     return(TRUE)
   }
   if (!dir.exists(pkg_dir)) {
-    warning("Pacote vendor não encontrado: ", pkg_dir)
     return(FALSE)
   }
 
@@ -1830,7 +1829,11 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
     project_root <- spatial_detect_project_root()
     spatial_activate_vendor_library(project_root = project_root)
     cc_landing_ready <- isTRUE(spatial_ensure_curbcut_packages(project_root = project_root))
-    db_path <- file.path(project_root, "base_final.duckdb")
+    db_path <- if (exists("ic2025_base_agregada_duckdb_path", mode = "function")) {
+      ic2025_base_agregada_duckdb_path()
+    } else {
+      file.path(project_root, "base_final.duckdb")
+    }
     spatial_register_geo_resources(project_root = project_root)
     spatial_register_vendor_font_resources(project_root = project_root)
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
@@ -2418,23 +2421,29 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
       shiny::updateSliderInput(session, "snapshot_index", value = next_idx)
     })
 
-    output$theme_drop_ui <- shiny::renderUI({
-      if (!isTRUE(cc_landing_ready)) {
-        return(
-          shiny::div(
-            class = "ic2025-spatial-theme-fallback",
-            shiny::selectInput(
-              ns("theme_group_fallback"),
-              NULL,
-              choices = stats::setNames(unique(var_catalog$group), unique(var_catalog$group)),
-              selected = current_group(),
-              selectize = FALSE
-            )
-          )
+output$theme_drop_ui <- shiny::renderUI({
+      fallback_ui <- shiny::div(
+        class = "ic2025-spatial-theme-fallback",
+        shiny::selectInput(
+          ns("theme_group_fallback"),
+          NULL,
+          choices = stats::setNames(unique(var_catalog$group), unique(var_catalog$group)),
+          selected = current_group(),
+          selectize = FALSE
         )
+      )
+      if (!isTRUE(cc_landing_ready)) {
+        return(fallback_ui)
+      }
+      theme_drop_input <- tryCatch(
+        get("theme_drop_input", envir = getNamespace(paste0("cc", ".landing")), inherits = FALSE),
+        error = function(e) NULL
+      )
+      if (is.null(theme_drop_input)) {
+        return(fallback_ui)
       }
       tryCatch(
-        cc.landing::theme_drop_input(
+        theme_drop_input(
           inputId = ns("theme_drop"),
           pages = theme_pages,
           width = "250px",
@@ -2444,16 +2453,7 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
           lang = "fr"
         ),
         error = function(e) {
-          shiny::div(
-            class = "ic2025-spatial-theme-fallback",
-            shiny::selectInput(
-              ns("theme_group_fallback"),
-              NULL,
-              choices = stats::setNames(unique(var_catalog$group), unique(var_catalog$group)),
-              selected = current_group(),
-              selectize = FALSE
-            )
-          )
+          fallback_ui
         }
       )
     })
