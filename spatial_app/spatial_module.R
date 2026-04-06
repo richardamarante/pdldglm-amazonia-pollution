@@ -35,6 +35,10 @@ SPATIAL_BACKGROUND_REFRESH_MS <- 900L
   env
 })
 
+
+
+
+
 spatial_detect_project_root <- function() {
   cands <- unique(c(
     as.character(getOption("ic2025.project_root", "")),
@@ -53,6 +57,10 @@ spatial_detect_project_root <- function() {
   }
   normalizePath(getwd(), winslash = "/", mustWork = FALSE)
 }
+
+
+
+
 
 spatial_default_mapbox_token <- function() {
   tok <- Sys.getenv("IC2025_MAPBOX_TOKEN", unset = "")
@@ -1264,6 +1272,10 @@ spatial_package_imports <- function(pkg_dir) {
   imports[nzchar(imports) & !imports %in% c("base", "utils", "stats", "graphics", "methods")]
 }
 
+
+
+
+
 spatial_ensure_vendor_package <- function(package, pkg_dir, project_root = spatial_detect_project_root()) {
   spatial_activate_vendor_library(project_root = project_root)
   if (requireNamespace(package, quietly = TRUE)) {
@@ -1301,6 +1313,10 @@ spatial_ensure_vendor_package <- function(package, pkg_dir, project_root = spati
 
   requireNamespace(package, quietly = TRUE)
 }
+
+
+
+
 
 spatial_ensure_runtime_package <- function(package, project_root = spatial_detect_project_root()) {
   spatial_activate_vendor_library(project_root = project_root)
@@ -1828,13 +1844,21 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
     ns <- session$ns
     project_root <- spatial_detect_project_root()
     spatial_activate_vendor_library(project_root = project_root)
-    cc_landing_ready <- isTRUE(spatial_ensure_curbcut_packages(project_root = project_root))
+    
+
+
+
+cc_landing_ready <- isTRUE(spatial_ensure_curbcut_packages(project_root = project_root))
     db_path <- if (exists("ic2025_base_agregada_duckdb_path", mode = "function")) {
       ic2025_base_agregada_duckdb_path()
     } else {
       file.path(project_root, "base_final.duckdb")
     }
     spatial_register_geo_resources(project_root = project_root)
+spatial_register_geo_resources(project_root = project_root)
+spatial_register_geo_resources(project_root = project_root)
+spatial_register_geo_resources(project_root = project_root)
+spatial_register_geo_resources(project_root = project_root)
     spatial_register_vendor_font_resources(project_root = project_root)
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
     table_name <- DBI::dbListTables(con)[1]
@@ -2421,6 +2445,10 @@ spatial_app_server <- function(id, active = shiny::reactive(TRUE), refresh = shi
       shiny::updateSliderInput(session, "snapshot_index", value = next_idx)
     })
 
+
+
+
+
 output$theme_drop_ui <- shiny::renderUI({
       fallback_ui <- shiny::div(
         class = "ic2025-spatial-theme-fallback",
@@ -2457,6 +2485,10 @@ output$theme_drop_ui <- shiny::renderUI({
         }
       )
     })
+
+
+
+
 
     theme_drop_click <- shiny::reactive({
       payload <- input[["theme_drop"]]

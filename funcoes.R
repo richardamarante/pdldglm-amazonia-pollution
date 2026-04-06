@@ -27,6 +27,10 @@ ic2025_data_mode <- function() {
   modo
 }
 
+
+
+
+
 ic2025_base_agregada_path <- function() {
   as.character(getOption("ic2025.agregada_rds", "base_final_era5land_cams_internacoes_obitos_BR_20150101_20251231_FINAL_missing_padronizado.rds"))
 }
@@ -84,7 +88,7 @@ ic2025_agregada_duckdb_url <- function() {
     url <- Sys.getenv("IC2025_AGREGADA_DUCKDB_URL", unset = "")
   }
   if (!nzchar(url)) {
-    url <- "https://github.com/richardamarante/pdldglm-amazonia-pollution/releases/latest/download/base_final.duckdb"
+    url <- "https://github.com/richardamarante/dados-painelnacional/releases/latest/download/base_final.duckdb"
   }
   url
 }
@@ -119,7 +123,7 @@ ic2025_duckdb_file_ready <- function(path) {
 
 ic2025_download_agregada_duckdb <- function(dest_path, url = ic2025_agregada_duckdb_url()) {
   if (!nzchar(url)) {
-    stop("URL do DuckDB não configurada. Defina 'ic2025.agregada_duckdb_url' ou 'IC2025_AGREGADA_DUCKDB_URL'.")
+    stop("URL do DuckDB nao configurada. Defina 'ic2025.agregada_duckdb_url' ou 'IC2025_AGREGADA_DUCKDB_URL'.")
   }
 
   dir.create(dirname(dest_path), recursive = TRUE, showWarnings = FALSE)
@@ -140,12 +144,12 @@ ic2025_download_agregada_duckdb <- function(dest_path, url = ic2025_agregada_duc
   )
 
   if (!ic2025_duckdb_file_ready(tmp_path)) {
-    stop("Download do DuckDB falhou ou retornou um arquivo inválido: ", tmp_path)
+    stop("Download do DuckDB falhou ou retornou um arquivo invalido: ", tmp_path)
   }
 
   if (file.exists(dest_path)) unlink(dest_path, force = TRUE)
   if (!file.rename(tmp_path, dest_path)) {
-    stop("Não foi possível mover o DuckDB baixado para: ", dest_path)
+    stop("Nao foi possivel mover o DuckDB baixado para: ", dest_path)
   }
 
   normalizePath(dest_path, winslash = "/", mustWork = FALSE)
@@ -160,15 +164,15 @@ ic2025_storage_backend <- function() {
     db_path <- tryCatch(
       ic2025_base_agregada_duckdb_path(),
       error = function(e) {
-        warning("Backend 'duckdb' solicitado, mas não foi possível preparar a base: ", conditionMessage(e))
+        warning("Backend 'duckdb' solicitado, mas nao foi possivel preparar a base: ", conditionMessage(e))
         ""
       }
     )
     if (!ok_duck || !ok_dbi) {
-      warning("Backend 'duckdb' solicitado, mas pacotes 'duckdb'/'DBI' não estão disponíveis. Voltando para 'rds'.")
+      warning("Backend 'duckdb' solicitado, mas pacotes 'duckdb'/'DBI' nao estao disponiveis. Voltando para 'rds'.")
       backend <- "rds"
     } else if (!nzchar(db_path) || !file.exists(db_path)) {
-      warning("Backend 'duckdb' solicitado, mas arquivo não encontrado: ", db_path, ". Voltando para 'rds'.")
+      warning("Backend 'duckdb' solicitado, mas arquivo nao encontrado: ", db_path, ". Voltando para 'rds'.")
       backend <- "rds"
     }
   }

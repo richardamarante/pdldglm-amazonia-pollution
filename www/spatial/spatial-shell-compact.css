@@ -1,3 +1,4 @@
+
 @media (min-width: 1081px) and (max-height: 820px), (min-width: 1081px) and (max-width: 1450px) {
   .ic2025-spatial-app {
     --sp-left-w: 282px;
@@ -219,3 +220,4 @@
     right: 12px;
   }
 }
+
