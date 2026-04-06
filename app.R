@@ -734,6 +734,10 @@ IC2025_THEME_PRESETS <- lapply(IC2025_THEME_PRESET_OVERRIDES, function(overrides
   )
 })
 
+IC2025_SHOW_PROFILE_THEME_MUTABLE_CONTROLS <- isTRUE(
+  getOption("ic2025.show_profile_theme_mutable_controls", FALSE)
+)
+
 IC2025_THEME_COLORS_FLAT <- ic2025_theme_flatten(IC2025_THEME_COLORS)
 IC2025_THEME_PRESETS_FLAT <- lapply(IC2025_THEME_PRESETS, ic2025_theme_flatten)
 
@@ -1606,6 +1610,7 @@ ui <- dashboardPage(
           class = "user-body",
           tags$div(
             class = "user-theme-panel",
+            `data-theme-controls-visible` = if (isTRUE(IC2025_SHOW_PROFILE_THEME_MUTABLE_CONTROLS)) "true" else "false",
             tags$div(
               class = "user-tools-row",
               tags$a(
@@ -1623,6 +1628,7 @@ ui <- dashboardPage(
             ),
             tags$div(
               class = "user-theme-palette-wrap",
+              style = if (isTRUE(IC2025_SHOW_PROFILE_THEME_MUTABLE_CONTROLS)) NULL else "display:none;",
               tags$div(class = "user-theme-panel-title", "Palheta do dashboard"),
               tags$div(class = "user-theme-panel-copy", "Troque e compare o app inteiro em tempo real."),
               selectInput(
@@ -1636,6 +1642,7 @@ ui <- dashboardPage(
             ),
             tags$div(
               class = "user-theme-palette-wrap user-theme-palette-wrap--secondary",
+              style = if (isTRUE(IC2025_SHOW_PROFILE_THEME_MUTABLE_CONTROLS)) NULL else "display:none;",
               tags$div(class = "user-theme-panel-title", "Palheta da sidebar principal"),
               tags$div(class = "user-theme-panel-copy", "Misture a cor da sidebar esquerda do dashboard principal com outra palheta."),
               selectInput(
@@ -1649,6 +1656,7 @@ ui <- dashboardPage(
             ),
             tags$div(
               class = "user-theme-toggle-wrap",
+              style = if (isTRUE(IC2025_SHOW_PROFILE_THEME_MUTABLE_CONTROLS)) NULL else "display:none;",
               tags$div(class = "user-theme-panel-title", "Conectar quina da topbar"),
               tags$div(class = "user-theme-panel-copy", "Liga a área do “Dashboard” ao mesmo degradê da topbar. A palheta original ignora essa opção."),
               checkboxInput("ui_theme_link_topbar_corner", label = "Usar a quina conectada", value = IC2025_THEME_LINK_TOPBAR_DEFAULT)

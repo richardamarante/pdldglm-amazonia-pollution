@@ -34,6 +34,16 @@
   padding-bottom: 12px;
 }
 
+.user-theme-panel[data-theme-controls-visible="false"] {
+  padding-bottom: 0;
+}
+
+.user-theme-panel[data-theme-controls-visible="false"] .user-tools-row {
+  min-height: 36px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 .user-theme-panel[data-theme-original="true"] .user-theme-palette-wrap--secondary,
 .user-theme-panel[data-theme-original="true"] .user-theme-toggle-wrap {
   opacity: 0.58;
