@@ -1,0 +1,23 @@
+/* Flat sidebar menu style override (applied on top of custom.css) */
+.main-sidebar .sidebar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar-nav-label {
+  display: none;
+}
+
+.sidebar-menu > li > a {
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.sidebar-menu > li > a:hover {
+  transform: none;
+}
+
+.sidebar-menu > li.active > a {
+  background: var(--ic2025-dashboard-flat-active-bg) !important;
+  box-shadow: inset 3px 0 0 var(--ic2025-dashboard-flat-active-accent);
+}
