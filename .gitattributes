@@ -1,0 +1,2 @@
+Bases[[:space:]]de[[:space:]]Dados/csv/cidades_amazonia_legal.csv filter=lfs diff=lfs merge=lfs -text
+Bases[[:space:]]de[[:space:]]Dados/rds/cidades_amazonia_legal.rds filter=lfs diff=lfs merge=lfs -text
